@@ -7,14 +7,12 @@ class Game {
 	readonly #videoState: VideoState
 	// elements
 	readonly #guessButton: HTMLAnchorElement
-	readonly #guessField: HTMLInputElement
 	readonly #playButton: HTMLAnchorElement
 	readonly #options: HTMLSelectElement
 	readonly #output: HTMLElement
 
 	constructor(
 		guessButton: HTMLAnchorElement,
-		guessFeild: HTMLInputElement,
 		videoElement: HTMLDivElement,
 		playButton: HTMLAnchorElement,
 		options: HTMLSelectElement,
@@ -22,7 +20,6 @@ class Game {
 	) {
 		// elements
 		this.#guessButton = guessButton
-		this.#guessField = guessFeild
 		this.#playButton = playButton
 		this.#options = options
 		this.#output = output
@@ -46,7 +43,6 @@ class Game {
 
 	addEventListeners() {
 		this.#guessButton.addEventListener('click', this.guess.bind(this))
-		this.#guessField.addEventListener('keyup', this.hasGuessed.bind(this))
 		this.#playButton.addEventListener('click', () => this.#videoState.playForGuess())
 		console.log('added event listeners')
 	}
@@ -57,6 +53,7 @@ class Game {
 		//return selected.dataset.eventId!
 	}
 
+	// todo: refactor
 	guess(ev?: MouseEvent) {
 		ev?.preventDefault()
 		this.tryGuess()
@@ -99,13 +96,6 @@ class Game {
 		await navigator.clipboard.writeText(this.#output.textContent!)
 
 	}
-
-	hasGuessed(ev: KeyboardEvent) {
-		ev.preventDefault()
-		if (ev.key === 'Enter') {
-			this.guess()
-		}
-	}
 }
 
 function getElementStrict<T = HTMLElement>(id: string) {
@@ -119,11 +109,10 @@ function getElementStrict<T = HTMLElement>(id: string) {
 // @ts-expect-error external lib
 window.onYouTubeIframeAPIReady = function() {
 	const btnGuess = getElementStrict<HTMLAnchorElement>('btn-guess')
-	const inpGuess = getElementStrict<HTMLInputElement>('inp-guess')
 	const vidPlayer = getElementStrict<HTMLDivElement>('video-root')
 	const inpPlay = getElementStrict<HTMLAnchorElement>('btn-play')
 	const opts = getElementStrict<HTMLSelectElement>('game-options')
 	const out = getElementStrict('output')
-	const game = new Game(btnGuess, inpGuess, vidPlayer, inpPlay, opts, out)
+	const game = new Game(btnGuess, vidPlayer, inpPlay, opts, out)
 	console.log(game)
 }
