@@ -10,6 +10,8 @@ class Game {
 	readonly #playButton: HTMLAnchorElement
 	readonly #options: HTMLSelectElement
 	readonly #output: HTMLElement
+	readonly #progressBar: HTMLDivElement
+	readonly #skipButton: HTMLAnchorElement
 
 	constructor(
 		guessButton: HTMLAnchorElement,
@@ -17,19 +19,28 @@ class Game {
 		playButton: HTMLAnchorElement,
 		options: HTMLSelectElement,
 		output: HTMLElement,
+		progress: HTMLDivElement,
+		skip: HTMLAnchorElement,
 	) {
 		// elements
+		// todo: normalise button naming convention
 		this.#guessButton = guessButton
 		this.#playButton = playButton
+		this.#skipButton = skip
 		this.#options = options
 		this.#output = output
+		this.#progressBar = progress
 
 		// game bits
 		this.addEventListeners()
 		this.initialiseDropdownOptions()
+		this.initialiseProgressMarkers()
 
 		// misc
 		this.#videoState = new VideoState(this.#guessState, videoElement)
+	}
+
+	initialiseProgressMarkers() {
 	}
 
 	initialiseDropdownOptions() {
@@ -42,48 +53,64 @@ class Game {
 	}
 
 	addEventListeners() {
-		this.#guessButton.addEventListener('click', this.guess.bind(this))
+		this.#guessButton.addEventListener('click', this.tryGuess.bind(this))
+		this.#skipButton.addEventListener('click', this.moveSkipState.bind(this))
 		this.#playButton.addEventListener('click', () => this.#videoState.playForGuess())
 		console.log('added event listeners')
 	}
 
+	moveSkipState(ev: MouseEvent) {
+		console.log('updating skip state')
+		ev.preventDefault()
+		if (this.#guessState.hasLost()) return
+		const hasLost = this.#guessState.nextProgressState()
+		// move progress bar
+		const progressBar = this.#progressBar.querySelector('#guess-progress')! as HTMLDivElement
+		const percProgress = (this.#guessState.getProgressState() / this.#guessState.maxGuesses) * 100
+		progressBar.style.width = `${percProgress}%`
+		if (hasLost) {
+			progressBar.classList.add('bg-gray-900')
+			progressBar.classList.remove('bg-gray-100')
+			this.#skipButton.classList.add('disabled')
+			this.writeOutput(false, this.#guessState.maxGuesses)
+		}
+	}
+
 	getGuess(): string {
 		return this.#options.value
-		//const [selected] = this.#options.selectedOptions
-		//return selected.dataset.eventId!
 	}
 
-	// todo: refactor
-	guess(ev?: MouseEvent) {
-		ev?.preventDefault()
-		this.tryGuess()
-	}
+	tryGuess(ev: MouseEvent) {
+		ev.preventDefault()
 
-	tryGuess() {
-		// move to next input state
+		// move to next guess state
 		this.#guessState.nextState()
 		const guess = this.getGuess()
 		const isMatch = this.#videoState.getVideo() === guess
-		this.writeProgress(isMatch, this.#guessState.getState())
-		console.log({isMatch})
+		const totalGuesses = this.#guessState.getState()
+		this.writeProgress(totalGuesses)
+		this.writeOutput(isMatch, totalGuesses)
 	}
 
-	async writeProgress(matches: boolean, guesses: number) {
-		console.log(guesses)
+	writeProgress(totalGuesses: number) {
+	}
+
+
+	async writeOutput(matches: boolean, guesses: number) {
+		console.log({guesses})
 		this.#output.innerHTML = ''
 		const p = document.createElement('p')
 		const node = document.createTextNode('🧙🏻‍♂️')
 		p.appendChild(node)
 
-		for (let i = 0; i < guesses; i++) {
-			if (matches && i === guesses - 1) {
-				const node = document.createTextNode('🟩')
-				p.appendChild(node)
-			} else {
-				const node = document.createTextNode('⬛️')
-				p.appendChild(node)
+		// todo: look in to splitting skipstate and gamestate 
+		Array.from({length: guesses}, (_, idx) => {
+			let node = document.createTextNode('⬛️')
+			if (matches && (idx + 1) === guesses) {
+				node = document.createTextNode('🟩')
 			}
-		}
+			p.appendChild(node)
+		})
 
 		const text = document.createElement('p')
 		text.textContent = '#Lurdle ⚔️'
@@ -98,8 +125,8 @@ class Game {
 	}
 }
 
-function getElementStrict<T = HTMLElement>(id: string) {
-	const elem = document.getElementById(id)
+function getElementStrict<T = HTMLElement>(id: string, root: Document = document) {
+	const elem = root.getElementById(id)
 	if (!elem) {
 		throw new Error('Unable to find element: ' + id)
 	}
@@ -108,11 +135,22 @@ function getElementStrict<T = HTMLElement>(id: string) {
 
 // @ts-expect-error external lib
 window.onYouTubeIframeAPIReady = function() {
+	// buttons
 	const btnGuess = getElementStrict<HTMLAnchorElement>('btn-guess')
+	const btnSkip = getElementStrict<HTMLAnchorElement>('btn-skip')
+	const btnPlay = getElementStrict<HTMLAnchorElement>('btn-play')
+
+	// youtube api root
 	const vidPlayer = getElementStrict<HTMLDivElement>('video-root')
-	const inpPlay = getElementStrict<HTMLAnchorElement>('btn-play')
+
+	// where you pick your scene
 	const opts = getElementStrict<HTMLSelectElement>('game-options')
+
+	// should be a modal
 	const out = getElementStrict('output')
-	const game = new Game(btnGuess, vidPlayer, inpPlay, opts, out)
+	const progress = getElementStrict<HTMLDivElement>('game-progress')
+
+	// initialise the game
+	const game = new Game(btnGuess, vidPlayer, btnPlay, opts, out, progress, btnSkip)
 	console.log(game)
 }

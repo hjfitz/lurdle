@@ -2,6 +2,7 @@
 <head>
 	<title>Lurdle</title>
 	<script defer type="text/javascript" src="https://www.youtube.com/iframe_api"></script>
+	<script defer type="module" src="./main.js"></script>
 	<meta charset="utf-8" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
 	<style>
@@ -17,15 +18,28 @@
 			height: 100%;
 			margin-left: -100%;
 		}
+
+		@font-face {
+			font-family: 'Ringbearer Medium';
+			font-style: normal;
+			font-weight: normal;
+			src: local('Ringbearer Medium'), url('./ringbearer/RINGM___.woff') format('woff');
+		}
+
+		.ring {
+			font-family: 'Ringbearer Medium'
+		}
+
 	</style>
 </head>
-<body>
+<body class="bg-black text-white">
 	<main>
-		<header>
-			<h1>Lurdle</h1>
+		<header class="text-center w-full">
+			<h1 class="ring text-4xl py-4 text-yellow-400">Lurdle</h1>
 		</header>
 
 		<section>
+			<div class="w-full h-2 bg-gray-800"></div>
 			<div class="youtube-container">
 				<div id="video-root"></div>
 			</div>
@@ -33,11 +47,19 @@
 
 
 		<section id="output"></section>
+
+		<section>
+			<div id="game-progress" class="w-full h-4 relative bg-gray-800">
+				<div id="guess-progress" style="width: 1px;" class="absolute h-full bg-gray-700 duration-300"></div>
+				<div id="video-progress"></div>
+			</div>
+		</section>
+
 		<section>
 			<a href="#" id="btn-play">Play</a>
 			<select id="game-options"></select>
 			<a href="#" id="btn-guess">Guess</a>
+			<a href="#" id="btn-skip">Skip <span id="skip-time">1</span>s</a>
 		</section>
 	</main>
-	<script defer type="module" src="./main.js"></script>
 </body>

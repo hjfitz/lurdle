@@ -1,9 +1,10 @@
 export class GameState {
-	readonly #maxGuesses = 5
-	#guessState = 0
+	readonly maxGuesses: 5 = 5
+	#guessState: number = 0
+	#progressState: number = 0
 
 	nextState(): boolean {
-		this.#guessState += 1
+		this.#guessState = this.#guessState + 1
 		return this.hasLost()
 	}
 
@@ -12,7 +13,16 @@ export class GameState {
 	}
 
 	hasLost(): boolean {
-		return this.#guessState >= this.#maxGuesses
+		return this.#guessState >= this.maxGuesses
+	}
+
+	public nextProgressState(): boolean {
+		this.#progressState += 1
+		return this.nextState()
+	}
+
+	public getProgressState(): number {
+		return this.#progressState
 	}
 
 	getSeconds(): number {
