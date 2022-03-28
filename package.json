@@ -7,7 +7,8 @@
   "author": "Harry Fitzgerald <hjfitz@pm.me>",
   "license": "MIT",
   "scripts": {
-    "dev": "live-server ./src"
+    "dev": "live-server ./src",
+    "watch": "tsc -w --pretty"
   },
   "devDependencies": {
     "@types/youtube": "^0.0.46",
