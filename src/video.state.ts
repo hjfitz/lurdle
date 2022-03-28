@@ -16,7 +16,7 @@ export class VideoState {
 		this.#player = videoPlayer
 		this.#ytPlayer = new YT.Player(this.#player, {
 			height: '390',
-        	width: '640',
+			width: '640',
 			playerVars: {
 				playsinline: 1,
 				controls: 0,

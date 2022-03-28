@@ -40,6 +40,7 @@ class Game {
 		this.#videoState = new VideoState(this.#guessState, videoElement)
 	}
 
+	// todo
 	initialiseProgressMarkers() {}
 
 	initialiseDropdownOptions() {
@@ -57,12 +58,6 @@ class Game {
 		this.#guessButton.addEventListener('click', this.tryGuess.bind(this))
 		this.#skipButton.addEventListener('click', this.moveSkipState.bind(this))
 		this.#playButton.addEventListener('click', () => this.#videoState.playForGuess())
-		document.addEventListener('click', (ev) => {
-			const target = ev?.target as Element
-			if (target === this.#output) return
-			// @ts-expect-error spec bad
-			this.#output.open = false
-		})
 	}
 
 	moveSkipState(ev: MouseEvent) {
@@ -70,9 +65,7 @@ class Game {
 		if (this.#guessState.hasLost()) return
 		const hasLost = this.#guessState.nextProgressState()
 		// move progress bar
-		const progressBar = this.#progressBar.querySelector(
-			'#guess-progress'
-		)! as HTMLDivElement
+		const progressBar = this.#progressBar.querySelector('#guess-progress')! as HTMLDivElement
 		const percProgress = this.#guessState.getSkipPerc()
 		progressBar.style.width = `${percProgress}%`
 		if (hasLost) {
@@ -102,7 +95,7 @@ class Game {
 	writeProgress(totalGuesses: number) {}
 
 	async writeOutput(matches: boolean, guesses: number) {
-		console.log({ guesses })
+		console.log({ guesses, matches, hasLost: this.#guessState.hasLost() })
 		this.#output.innerHTML = ''
 		const p = document.createElement('p')
 		const node = document.createTextNode('🧙🏻‍♂️')
@@ -124,7 +117,16 @@ class Game {
 			this.#output.appendChild(document.createTextNode('\n\n'))
 			this.#output.appendChild(p)
 			// @ts-expect-error dialog not fully supported
-			this.#output.open = true
+			this.#output.showModal()
+
+			// todo: un-break
+			document.addEventListener('click', (ev) => {
+				return
+				const target = ev?.target as Element
+				if (target === this.#output) return
+				// @ts-expect-error spec bad
+				this.#output.open = false
+			})
 			//await navigator.clipboard.writeText(this.#output.textContent!);
 		}
 
