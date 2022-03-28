@@ -2,6 +2,9 @@
 
 ## todo
 
-- basic skip button functionality
-- show skip progress
-- show video progress
+- [x] basic skip button functionality
+- [x] show skip progress
+- [ ] show video progress
+- [ ] pick the day's video
+- [ ] model popup for result
+- [ ] tests???
