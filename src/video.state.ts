@@ -34,11 +34,16 @@ export class VideoState {
 			this.#progress.style.transitionDuration = '0ms'
 			this.#progress.style.width = '0%'
 		})
+
 	}
 
 	#getEvent(): VideoInfo {
-		// todo: pick this based on date
-		return this.#videos[1]
+		const date = new Date()
+		const dayOfYear =  (Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(date.getFullYear(), 0, 0)) / 24 / 60 / 60 / 1000
+
+		const idx = dayOfYear & this.#videos.length
+		console.log(idx)
+		return this.#videos[idx]
 	}
 
 	#animatePlayProgress(timeMs: number): void {
