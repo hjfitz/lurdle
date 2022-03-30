@@ -37,7 +37,8 @@ class Game {
 		this.initialiseProgressMarkers()
 
 		// misc
-		this.#videoState = new VideoState(this.#guessState, videoElement)
+		const scrobbleProgress = progress.querySelector('#video-progress') as HTMLElement
+		this.#videoState = new VideoState(this.#guessState, videoElement, scrobbleProgress)
 	}
 
 	// todo
@@ -67,7 +68,6 @@ class Game {
 
 	moveSkipState(ev: MouseEvent) {
 		ev.preventDefault()
-		console.log('moving skip state')
 		const hasLost = this.#guessState.nextProgressState()
 		if (hasLost) return this.writeOutput(false, this.#guessState.getAttemptCount())
 		// move progress bar

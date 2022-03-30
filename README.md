@@ -6,7 +6,7 @@
 
 - [x] basic skip button functionality
 - [x] show skip progress
-- [ ] show video progress
+- [x] show video progress
 - [ ] pick the day's video
 - [x] model popup for result
 - [x] hosting

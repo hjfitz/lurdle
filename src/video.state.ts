@@ -5,15 +5,18 @@ export class VideoState {
 	readonly #videos = database
 	readonly #guessState: GameState
 	readonly #player: HTMLDivElement
+	readonly #progress: HTMLElement
 	readonly #ytPlayer: YT.Player
 	readonly #event: VideoInfo
 
 	constructor(
 		guessState: GameState, 
-		videoPlayer: HTMLDivElement
+		videoPlayer: HTMLDivElement,
+		videoProgress: HTMLElement,
 	) {
 		this.#guessState = guessState
 		this.#player = videoPlayer
+		this.#progress = videoProgress
 		this.#ytPlayer = new YT.Player(this.#player, {
 			height: '390',
 			width: '640',
@@ -27,6 +30,10 @@ export class VideoState {
 			},
 		})
 		this.#event = this.#getEvent()
+		this.#progress.addEventListener('transitionend', () => {
+			this.#progress.style.transitionDuration = '0ms'
+			this.#progress.style.width = '0%'
+		})
 	}
 
 	#getEvent(): VideoInfo {
@@ -34,14 +41,22 @@ export class VideoState {
 		return this.#videos[1]
 	}
 
-	public playForGuess() {
+	#animatePlayProgress(timeMs: number): void {
+		this.#progress.style.transitionDuration = `${timeMs + 100}ms`
+		this.#progress.style.transitionProperty = 'width'
+		this.#progress.style.width = `${this.#guessState.getSkipPerc()}%`
+
+	}
+
+	public playForGuess(): void {
 		console.log(this, 'playing round')
 		const time = this.#guessState.getSeconds()
 		const {timestamp, youtubeId} = this.#event
 		this.#ytPlayer.loadVideoById(youtubeId, timestamp)
 		this.#ytPlayer.playVideo()
-		//this.#ytPlayer.playVideoAt(timestamp ?? 0)
-		setTimeout(() => this.#ytPlayer.pauseVideo(), time * 1000)
+		const playTimeMs = time * 1000
+		setTimeout(() => this.#ytPlayer.pauseVideo(), playTimeMs)
+		this.#animatePlayProgress(playTimeMs)
 	}
 
 	public getVideo(): string {
