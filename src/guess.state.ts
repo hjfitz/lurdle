@@ -31,20 +31,18 @@ export class GameState {
 	}
 
 	public getSeconds(): number {
-		// 1 second 0, 1 total guesses
-		// 2 seconds for 2
-		// 3 seconds for 3
-		// 5 seconds for 5 guesses
 		switch (this.#skipCount) {
-		case 0:
+		case 0: {
+			return 1
+		}
 		case 1: {
 			return 2
 		}
 		case 2: {
-			return 5
+			return 4
 		}
 		case 3: {
-			return 8
+			return 7
 		}
 		default: {
 			return this.#maxSeconds
