@@ -78,7 +78,7 @@ class Game {
 			progressBar.classList.add('bg-gray-900')
 			progressBar.classList.remove('bg-gray-100')
 			this.#skipButton.classList.add('disabled')
-			this.writeOutput(false, this.#guessState.maxGuesses)
+			this.writeOutput(false, this.#guessState.maxAttempts)
 			// todo: cancel other buttons
 		}
 	}
@@ -91,10 +91,10 @@ class Game {
 		ev.preventDefault()
 
 		// move to next guess state
-		this.#guessState.nextState()
+		this.#guessState.nextAttemptState()
 		const guess = this.getGuess()
 		const isMatch = this.#videoState.getVideo() === guess
-		const totalGuesses = this.#guessState.getState()
+		const totalGuesses = this.#guessState.getAttemptCount()
 		this.writeProgress(totalGuesses)
 		this.writeOutput(isMatch, totalGuesses)
 	}
@@ -143,6 +143,11 @@ function getElementStrict<T = HTMLElement>(
 	}
 	return elem as unknown as T
 }
+
+const tag = document.createElement('script')
+tag.src = 'https://www.youtube.com/iframe_api'
+const firstScriptTag = document.getElementsByTagName('script')[0]
+firstScriptTag.parentNode!.insertBefore(tag, firstScriptTag)
 
 // @ts-expect-error external lib
 window.onYouTubeIframeAPIReady = function () {

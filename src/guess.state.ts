@@ -1,33 +1,33 @@
 export class GameState {
-	readonly maxGuesses: 5 = 5
+	readonly maxAttempts: 5 = 5
 	readonly #maxSeconds: 10 = 10
-	#guessState = 0
-	#progressState = 0
-
-	public nextState(): boolean {
-		this.#guessState = this.#guessState + 1
-		return this.hasLost()
-	}
-
-	public getState(): number {
-		return this.#guessState
-	}
+	#attemptCount = 0
+	#skipCount = 0
 
 	public getSkipPerc(): number {
 		return Math.floor((this.getSeconds() / this.#maxSeconds) * 100)
 	}
 
 	public hasLost(): boolean {
-		return this.#guessState >= this.maxGuesses
+		return this.#attemptCount >= this.maxAttempts
+	}
+
+	public nextAttemptState(): boolean {
+		this.#attemptCount = this.#attemptCount + 1
+		return this.hasLost()
 	}
 
 	public nextProgressState(): boolean {
-		this.#progressState += 1
-		return this.nextState()
+		this.#skipCount += 1
+		return this.nextAttemptState()
 	}
 
-	public getProgressState(): number {
-		return this.#progressState
+	public getAttemptCount(): number {
+		return this.#attemptCount
+	}
+
+	public getSkipCount(): number {
+		return this.#skipCount
 	}
 
 	public getSeconds(): number {
@@ -35,7 +35,7 @@ export class GameState {
 		// 2 seconds for 2
 		// 3 seconds for 3
 		// 5 seconds for 5 guesses
-		switch (this.#progressState) {
+		switch (this.#skipCount) {
 		case 0:
 		case 1: {
 			return 2

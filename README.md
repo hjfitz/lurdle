@@ -8,5 +8,7 @@
 - [x] show skip progress
 - [ ] show video progress
 - [ ] pick the day's video
-- [ ] model popup for result
+- [x] model popup for result
+- [x] hosting
+- [ ] appears to play more when guesscount increases instead of skip count???
 - [ ] tests???
