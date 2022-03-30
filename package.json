@@ -7,6 +7,7 @@
   "author": "Harry Fitzgerald <hjfitz@pm.me>",
   "license": "MIT",
   "scripts": {
+    "build:prod": "tsc",
     "dev": "live-server ./src",
     "watch": "tsc -w --pretty"
   },

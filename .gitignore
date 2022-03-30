@@ -8,3 +8,5 @@ api/dist/
 api/.env.local
 
 src/*.js
+
+public/

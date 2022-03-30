@@ -68,9 +68,8 @@ class Game {
 	moveSkipState(ev: MouseEvent) {
 		ev.preventDefault()
 		console.log('moving skip state')
-		console.log({hasLost: this.#guessState.hasLost()})
-		if (this.#guessState.hasLost()) return
-		this.#guessState.nextProgressState()
+		const hasLost = this.#guessState.nextProgressState()
+		if (hasLost) return
 		// move progress bar
 		const progressBar = this.#progressBar.querySelector('#guess-progress') as HTMLDivElement
 		const percProgress = this.#guessState.getSkipPerc()
