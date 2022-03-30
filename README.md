@@ -9,6 +9,7 @@
 - [x] show video progress
 - [ ] pick the day's video
 - [x] model popup for result
+- [ ] style the modal
 - [x] hosting
-- [ ] appears to play more when guesscount increases instead of skip count???
+- [x] appears to play more when guesscount increases instead of skip count???
 - [ ] tests???

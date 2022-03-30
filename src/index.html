@@ -42,7 +42,7 @@
 			backdrop-filter: blur(4px);
 		}
 
-		header {
+		.bg-green {
 			background-color: rgb(6 78 59);
 		}
 
@@ -50,7 +50,7 @@
 </head>
 <body class="bg-black text-white">
 	<main class="flex flex-col min-h-screen">
-		<header class="text-center w-full">
+		<header class="bg-green text-center w-full">
 			<h1 class="ring text-4xl py-4 text-yellow-400">Lurdle</h1>
 		</header>
 
@@ -62,11 +62,14 @@
 		</section>
 
 
-		<dialog style="display: hidden;" id="output" class="absolute  items-center justify-center top-0 left-0 min-w-full h-full z-20 bg-none m-0">
-			<div class="w-96 h-40 bg-white drop-shadow-md rounded border-slate-400">
-				<p>#Lurdle ⚔️
+		<dialog style="display: flex;" open id="output" class="absolute items-center justify-center top-0 left-0 min-w-full h-full z-20 bg-none m-0">
+			<div class="w-96 h-40 bg-green drop-shadow-md rounded border-slate-400 p-4">
+
+				<p class="text-yellow-400 ring text-center text-2xl">#Lurdle ⚔️
 				<p>
-				<p>🧙🏻‍♂️🟩
+				<p id="share-line" class=" text-center text-xl mt-6">🧙⬜⬜🟩
+					<p><a href="#">Copy</a>
+				
 			</div>
 		</dialog>
 

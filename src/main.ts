@@ -59,11 +59,13 @@ class Game {
 		this.#guessButton.addEventListener('click', this.tryGuess.bind(this))
 		this.#skipButton.addEventListener('click', this.moveSkipState.bind(this))
 		this.#playButton.addEventListener('click', () => this.#videoState.playForGuess())
+		/**
 		this.#output.addEventListener('click', () => {
 			// @ts-expect-error dialog not fully supported
 			this.#output.close()
 			this.#output.style.display = 'none'
 		})
+		*/
 	}
 
 	moveSkipState(ev: MouseEvent) {
@@ -116,13 +118,8 @@ class Game {
 			p.appendChild(node)
 		})
 
-		const text = document.createElement('p')
-		text.textContent = '#Lurdle ⚔️'
 		if (matches || this.#guessState.hasLost()) {
-			const outTo = this.#output.querySelector('div')!
-			outTo.innerHTML = ''
-			outTo.appendChild(text)
-			outTo.appendChild(document.createTextNode('\n\n'))
+			const outTo = this.#output.querySelector('#winner-line')!
 			outTo.appendChild(p)
 			// @ts-expect-error dialog not fully supported
 			this.#output.showModal()
