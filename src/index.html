@@ -4,7 +4,13 @@
 	<script defer type="text/javascript" src="https://www.youtube.com/iframe_api"></script>
 	<script defer type="module" src="./main.js"></script>
 	<meta charset="utf-8" />
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
+	<link 
+		rel="stylesheet" 
+		href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" 
+		integrity="sha512-wnea99uKIC3TJF7v4eKk4Y+lMz2Mklv18+r4na2Gn1abDRPPOeef95xTzdwGD9e6zXJBteMIhZ1+68QC5byJZw==" 
+		crossorigin="anonymous" 
+		referrerpolicy="no-referrer" 
+	/>
 	<style>
 		.youtube-container {
 			overflow: hidden;
@@ -31,10 +37,19 @@
 			font-family: 'Ringbearer Medium'
 		}
 
+		dialog {
+			background: none;
+			backdrop-filter: blur(4px);
+		}
+
+		header {
+			background-color: rgb(6 78 59);
+		}
+
 	</style>
 </head>
 <body class="bg-black text-white">
-	<main>
+	<main class="flex flex-col min-h-screen">
 		<header class="text-center w-full">
 			<h1 class="ring text-4xl py-4 text-yellow-400">Lurdle</h1>
 		</header>
@@ -47,24 +62,29 @@
 		</section>
 
 
-		<dialog open id="output" class="absolute w-96 h-40 top-0 bottom-0">
-			<p>#Lurdle ⚔️
-			<p>
-			<p>🧙🏻‍♂️🟩
+		<dialog style="display: hidden;" id="output" class="absolute  items-center justify-center top-0 left-0 min-w-full h-full z-10 bg-none m-0">
+			<div class="w-96 h-40 bg-white drop-shadow-md rounded border-slate-400">
+				<p>#Lurdle ⚔️
+				<p>
+				<p>🧙🏻‍♂️🟩
+			</div>
 		</dialog>
 
 		<section>
 			<div id="game-progress" class="w-full h-4 relative bg-gray-800">
-				<div id="guess-progress" style="width: 1px;" class="absolute h-full bg-gray-700 duration-300"></div>
+				<div id="guess-progress" style="width: 0%;" class="absolute h-full bg-gray-700 duration-300"></div>
 				<div id="video-progress"></div>
 			</div>
 		</section>
 
-		<section>
+		<section class="flex-1 flex flex-col items-center">
 			<a href="#" id="btn-play">Play</a>
-			<select id="game-options"></select>
-			<a href="#" id="btn-guess">Guess</a>
-			<a href="#" id="btn-skip">Skip <span id="skip-time">1</span>s</a>
+			
+			<div class="basis-3/5">
+				<select id="game-options" class="bg-black"></select>
+				<a href="#" id="btn-guess">Guess</a>
+				<a href="#" id="btn-skip">Skip <span id="skip-time">1</span>s</a>
+			</div>
 		</section>
 	</main>
 </body>

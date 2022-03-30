@@ -35,7 +35,7 @@ export class GameState {
 		// 2 seconds for 2
 		// 3 seconds for 3
 		// 5 seconds for 5 guesses
-		switch (this.#guessState) {
+		switch (this.#progressState) {
 		case 0:
 		case 1: {
 			return 2

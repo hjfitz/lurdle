@@ -58,21 +58,29 @@ class Game {
 		this.#guessButton.addEventListener('click', this.tryGuess.bind(this))
 		this.#skipButton.addEventListener('click', this.moveSkipState.bind(this))
 		this.#playButton.addEventListener('click', () => this.#videoState.playForGuess())
+		this.#output.addEventListener('click', () => {
+			// @ts-expect-error dialog not fully supported
+			this.#output.close()
+			this.#output.style.display = 'none'
+		})
 	}
 
 	moveSkipState(ev: MouseEvent) {
 		ev.preventDefault()
+		console.log('moving skip state')
+		console.log({hasLost: this.#guessState.hasLost()})
 		if (this.#guessState.hasLost()) return
-		const hasLost = this.#guessState.nextProgressState()
+		this.#guessState.nextProgressState()
 		// move progress bar
-		const progressBar = this.#progressBar.querySelector('#guess-progress')! as HTMLDivElement
+		const progressBar = this.#progressBar.querySelector('#guess-progress') as HTMLDivElement
 		const percProgress = this.#guessState.getSkipPerc()
 		progressBar.style.width = `${percProgress}%`
-		if (hasLost) {
+		if (this.#guessState.hasLost()) {
 			progressBar.classList.add('bg-gray-900')
 			progressBar.classList.remove('bg-gray-100')
 			this.#skipButton.classList.add('disabled')
 			this.writeOutput(false, this.#guessState.maxGuesses)
+			// todo: cancel other buttons
 		}
 	}
 
@@ -96,7 +104,6 @@ class Game {
 
 	async writeOutput(matches: boolean, guesses: number) {
 		console.log({ guesses, matches, hasLost: this.#guessState.hasLost() })
-		this.#output.innerHTML = ''
 		const p = document.createElement('p')
 		const node = document.createTextNode('🧙🏻‍♂️')
 		p.appendChild(node)
@@ -113,20 +120,14 @@ class Game {
 		const text = document.createElement('p')
 		text.textContent = '#Lurdle ⚔️'
 		if (matches || this.#guessState.hasLost()) {
-			this.#output.appendChild(text)
-			this.#output.appendChild(document.createTextNode('\n\n'))
-			this.#output.appendChild(p)
+			const outTo = this.#output.querySelector('div')!
+			outTo.innerHTML = ''
+			outTo.appendChild(text)
+			outTo.appendChild(document.createTextNode('\n\n'))
+			outTo.appendChild(p)
 			// @ts-expect-error dialog not fully supported
 			this.#output.showModal()
-
-			// todo: un-break
-			document.addEventListener('click', (ev) => {
-				return
-				const target = ev?.target as Element
-				if (target === this.#output) return
-				// @ts-expect-error spec bad
-				this.#output.open = false
-			})
+			this.#output.style.display = 'flex'
 			//await navigator.clipboard.writeText(this.#output.textContent!);
 		}
 
