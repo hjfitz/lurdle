@@ -31,7 +31,7 @@ export class VideoState {
 
 	#getEvent(): VideoInfo {
 		// todo: pick this based on date
-		return this.#videos[0]
+		return this.#videos[1]
 	}
 
 	public playForGuess() {

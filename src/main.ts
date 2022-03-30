@@ -69,7 +69,7 @@ class Game {
 		ev.preventDefault()
 		console.log('moving skip state')
 		const hasLost = this.#guessState.nextProgressState()
-		if (hasLost) return
+		if (hasLost) return this.writeOutput(false, this.#guessState.getAttemptCount())
 		// move progress bar
 		const progressBar = this.#progressBar.querySelector('#guess-progress') as HTMLDivElement
 		const percProgress = this.#guessState.getSkipPerc()

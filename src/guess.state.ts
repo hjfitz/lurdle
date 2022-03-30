@@ -13,7 +13,7 @@ export class GameState {
 	}
 
 	public nextAttemptState(): boolean {
-		this.#attemptCount = this.#attemptCount + 1
+		this.#attemptCount += 1
 		return this.hasLost()
 	}
 
