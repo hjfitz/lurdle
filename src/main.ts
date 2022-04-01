@@ -33,7 +33,6 @@ class Game {
 
 		// game bits
 		this.initialiseDropdownOptions()
-		//this.initialiseProgressMarkers()
 
 		// misc
 		const scrobbleProgress = progress.querySelector(
@@ -45,6 +44,18 @@ class Game {
 			scrobbleProgress,
 			this.addEventListeners.bind(this)
 		)
+
+		this.#videoState.onPlaying = () => this.setPlayingIcon()
+		this.#videoState.onStopped = () => this.setPlayingIcon(true)
+	}
+
+	setPlayingIcon(stopped = false) {
+		const playIcon = this.#playButton.querySelector('.material-icons')!
+		if (stopped)
+			playIcon.textContent = 'play_circle'
+		else
+			playIcon.textContent = 'not_interested' // pause or fiber_manual_record
+
 	}
 
 	initialiseDropdownOptions() {
@@ -61,9 +72,10 @@ class Game {
 	addEventListeners() {
 		this.#guessButton.addEventListener('click', this.tryGuess.bind(this))
 		this.#skipButton.addEventListener('click', this.moveSkipState.bind(this))
-		this.#playButton.addEventListener('click', () =>
+		this.#playButton.addEventListener('click', () => {
+			this.setPlayingIcon()
 			this.#videoState.playForGuess()
-		)
+		})
 	}
 
 	moveSkipState(ev: MouseEvent) {

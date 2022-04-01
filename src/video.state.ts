@@ -1,6 +1,8 @@
 import {GameState} from './guess.state.js'
 import {database, VideoInfo} from './db.js'
 
+const noop = () => {}
+
 export class VideoState {
 	readonly #videos = database
 	readonly #guessState: GameState
@@ -10,6 +12,8 @@ export class VideoState {
 	readonly #event: VideoInfo
 	readonly #onReady: () => void
 	public isReady = false
+	public onStopped = noop
+	public onPlaying = noop
 
 	constructor(
 		guessState: GameState, 
@@ -21,7 +25,9 @@ export class VideoState {
 		this.#player = videoPlayer
 		this.#progress = videoProgress
 		this.#onReady = onReady
+
 		const onPlayerReady = this.#onPlayerReady.bind(this)
+		const onPlayerStateChanged = this.#onPlayerStateChanged.bind(this)
 		this.#ytPlayer = new YT.Player(this.#player, {
 			height: '390',
 			width: '640',
@@ -33,7 +39,8 @@ export class VideoState {
 				rel: 0,
 			},
 			events: {
-				onReady: onPlayerReady
+				onReady: onPlayerReady,
+				onStateChange: onPlayerStateChanged,
 			}
 		})
 		this.#event = this.#getEvent()
@@ -42,6 +49,19 @@ export class VideoState {
 			this.#progress.style.width = '0%'
 		})
 
+	}
+
+	#onPlayerStateChanged(state: YT.OnStateChangeEvent) {
+		switch(state.data) {
+		case YT.PlayerState.ENDED:
+		case YT.PlayerState.PAUSED: {
+			this.onStopped()
+			break
+		}
+		case YT.PlayerState.PLAYING: {
+			this.onPlaying()
+		}
+		}
 	}
 
 	#onPlayerReady() {
