@@ -37,8 +37,14 @@ class Game {
 		this.initialiseProgressMarkers()
 
 		// misc
-		const scrobbleProgress = progress.querySelector('#video-progress') as HTMLElement
-		this.#videoState = new VideoState(this.#guessState, videoElement, scrobbleProgress)
+		const scrobbleProgress = progress.querySelector(
+			'#video-progress'
+		) as HTMLElement
+		this.#videoState = new VideoState(
+			this.#guessState,
+			videoElement,
+			scrobbleProgress
+		)
 	}
 
 	// todo
@@ -58,22 +64,20 @@ class Game {
 	addEventListeners() {
 		this.#guessButton.addEventListener('click', this.tryGuess.bind(this))
 		this.#skipButton.addEventListener('click', this.moveSkipState.bind(this))
-		this.#playButton.addEventListener('click', () => this.#videoState.playForGuess())
-		/**
-		this.#output.addEventListener('click', () => {
-			// @ts-expect-error dialog not fully supported
-			this.#output.close()
-			this.#output.style.display = 'none'
-		})
-		*/
+		this.#playButton.addEventListener('click', () =>
+			this.#videoState.playForGuess()
+		)
 	}
 
 	moveSkipState(ev: MouseEvent) {
 		ev.preventDefault()
 		const hasLost = this.#guessState.nextProgressState()
-		if (hasLost) return this.writeOutput(false, this.#guessState.getAttemptCount())
+		if (hasLost)
+			return this.writeOutput(false, this.#guessState.getAttemptCount())
 		// move progress bar
-		const progressBar = this.#progressBar.querySelector('#guess-progress') as HTMLDivElement
+		const progressBar = this.#progressBar.querySelector(
+			'#guess-progress'
+		) as HTMLDivElement
 		const percProgress = this.#guessState.getSkipPerc()
 		progressBar.style.width = `${percProgress}%`
 		if (this.#guessState.hasLost()) {
@@ -119,14 +123,19 @@ class Game {
 		})
 
 		if (matches || this.#guessState.hasLost()) {
-			const outTo = this.#output.querySelector('#winner-line')!
+			const outTo = this.#output.querySelector('#share-line')!
+			const copyBtn = this.#output.querySelector('#copy-btn')!
+			outTo.innerHTML = ''
 			outTo.appendChild(p)
 			// @ts-expect-error dialog not fully supported
 			this.#output.showModal()
 			this.#output.style.display = 'flex'
-			//await navigator.clipboard.writeText(this.#output.textContent!);
-		}
 
+			copyBtn.addEventListener('click', () => {
+				const winnerText = `#Lurdle ⚔️\n\n${p.textContent}\n\nhttps://lurdle.hjf.io/`
+				navigator.clipboard.writeText(winnerText)
+			})
+		}
 	}
 }
 

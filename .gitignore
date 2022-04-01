@@ -8,5 +8,6 @@ api/dist/
 api/.env.local
 
 src/*.js
+src/*.js.map
 
 public/
