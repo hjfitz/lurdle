@@ -7,11 +7,12 @@
 - [x] basic skip button functionality
 - [x] show skip progress
 - [x] show video progress
-- [ ] pick the day's video
+- [x] pick the day's video
 - [x] model popup for result
 - [ ] style the modal
-- [ ] copy functionality for win
+- [x] copy functionality for win
 - [ ] store day's win in localstorage and pop modal if this is the case
+- [ ] make it less shit for mobiles
 - [x] hosting
 - [x] appears to play more when guesscount increases instead of skip count???
 - [ ] tests???
