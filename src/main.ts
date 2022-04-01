@@ -32,9 +32,8 @@ class Game {
 		this.#progressBar = progress
 
 		// game bits
-		this.addEventListeners()
 		this.initialiseDropdownOptions()
-		this.initialiseProgressMarkers()
+		//this.initialiseProgressMarkers()
 
 		// misc
 		const scrobbleProgress = progress.querySelector(
@@ -43,12 +42,10 @@ class Game {
 		this.#videoState = new VideoState(
 			this.#guessState,
 			videoElement,
-			scrobbleProgress
+			scrobbleProgress,
+			this.addEventListeners.bind(this)
 		)
 	}
-
-	// todo
-	initialiseProgressMarkers() {}
 
 	initialiseDropdownOptions() {
 		Object.entries(Events)

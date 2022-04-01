@@ -8,15 +8,20 @@ export class VideoState {
 	readonly #progress: HTMLElement
 	readonly #ytPlayer: YT.Player
 	readonly #event: VideoInfo
+	readonly #onReady: () => void
+	public isReady = false
 
 	constructor(
 		guessState: GameState, 
 		videoPlayer: HTMLDivElement,
 		videoProgress: HTMLElement,
+		onReady: () => void,
 	) {
 		this.#guessState = guessState
 		this.#player = videoPlayer
 		this.#progress = videoProgress
+		this.#onReady = onReady
+		const onPlayerReady = this.#onPlayerReady.bind(this)
 		this.#ytPlayer = new YT.Player(this.#player, {
 			height: '390',
 			width: '640',
@@ -26,8 +31,10 @@ export class VideoState {
 				fs: 0,
 				showinfo: 0,
 				rel: 0,
-				
 			},
+			events: {
+				onReady: onPlayerReady
+			}
 		})
 		this.#event = this.#getEvent()
 		this.#progress.addEventListener('transitionend', () => {
@@ -37,12 +44,18 @@ export class VideoState {
 
 	}
 
+	#onPlayerReady() {
+		this.isReady = true
+		const {timestamp, youtubeId} = this.#event
+		this.#ytPlayer.loadVideoById(youtubeId, timestamp)
+		setTimeout(() => this.#ytPlayer.pauseVideo(), 500)
+		this.#onReady()
+	}
+
 	#getEvent(): VideoInfo {
 		const date = new Date()
 		const dayOfYear =  (Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - Date.UTC(date.getFullYear(), 0, 0)) / 24 / 60 / 60 / 1000
-
 		const idx = dayOfYear & this.#videos.length
-		console.log(idx)
 		return this.#videos[idx]
 	}
 
@@ -54,10 +67,8 @@ export class VideoState {
 	}
 
 	public playForGuess(): void {
-		console.log(this, 'playing round')
 		const time = this.#guessState.getSeconds()
-		const {timestamp, youtubeId} = this.#event
-		this.#ytPlayer.loadVideoById(youtubeId, timestamp)
+		this.#ytPlayer.seekTo(this.#event.timestamp ?? 0, true)
 		this.#ytPlayer.playVideo()
 		const playTimeMs = time * 1000
 		setTimeout(() => this.#ytPlayer.pauseVideo(), playTimeMs)
