@@ -12,6 +12,7 @@ class Game {
 	readonly #output: HTMLDialogElement
 	readonly #progressBar: HTMLDivElement
 	readonly #skipButton: HTMLAnchorElement
+	readonly #guessProgress: HTMLSpanElement
 
 	constructor(
 		guessButton: HTMLAnchorElement,
@@ -20,6 +21,7 @@ class Game {
 		options: HTMLSelectElement,
 		output: HTMLDialogElement,
 		progress: HTMLDivElement,
+		guessProgress: HTMLSpanElement,
 		skip: HTMLAnchorElement
 	) {
 		// elements
@@ -30,6 +32,7 @@ class Game {
 		this.#options = options
 		this.#output = output
 		this.#progressBar = progress
+		this.#guessProgress = guessProgress
 
 		// game bits
 		this.initialiseDropdownOptions()
@@ -81,21 +84,24 @@ class Game {
 	moveSkipState(ev: MouseEvent) {
 		ev.preventDefault()
 		const hasLost = this.#guessState.nextProgressState()
-		if (hasLost)
-			return this.writeOutput(false, this.#guessState.getAttemptCount())
+		if (hasLost) {
+			this.writeOutput(false, this.#guessState.getAttemptCount(), hasLost)
+		} else {
 		// move progress bar
-		const progressBar = this.#progressBar.querySelector(
-			'#guess-progress'
-		) as HTMLDivElement
-		const percProgress = this.#guessState.getSkipPerc()
-		progressBar.style.width = `${percProgress}%`
-		if (this.#guessState.hasLost()) {
-			progressBar.classList.add('bg-gray-900')
-			progressBar.classList.remove('bg-gray-100')
-			this.#skipButton.classList.add('disabled')
-			this.writeOutput(false, this.#guessState.maxAttempts)
+			const progressBar = this.#progressBar.querySelector(
+				'#guess-progress'
+			) as HTMLDivElement
+			const percProgress = this.#guessState.getSkipPerc()
+			progressBar.style.width = `${percProgress}%`
+			if (this.#guessState.hasLost()) {
+				progressBar.classList.add('bg-gray-900')
+				progressBar.classList.remove('bg-gray-100')
+				this.#skipButton.classList.add('disabled')
+				this.writeOutput(false, this.#guessState.maxAttempts, hasLost)
 			// todo: cancel other buttons
+			}
 		}
+		this.writeProgress()
 	}
 
 	getGuess(): string {
@@ -106,32 +112,31 @@ class Game {
 		ev.preventDefault()
 
 		// move to next guess state
-		this.#guessState.nextAttemptState()
+		const hasLost = this.#guessState.nextAttemptState()
 		const guess = this.getGuess()
 		const isMatch = this.#videoState.getVideo() === guess
 		const totalGuesses = this.#guessState.getAttemptCount()
-		this.writeProgress(totalGuesses)
-		this.writeOutput(isMatch, totalGuesses)
+		if (isMatch)
+			this.#guessState.setWin()
+		this.writeOutput(isMatch, totalGuesses, hasLost)
+		this.writeProgress()
 	}
 
-	writeProgress(totalGuesses: number) {}
+	writeProgress() {
+		const guessLine = this.#guessState.getGameLine()
+		this.#guessProgress.textContent = guessLine 
+	}
 
-	async writeOutput(matches: boolean, guesses: number) {
+	async writeOutput(matches: boolean, guesses: number, hasLost: boolean) {
 		console.log({ guesses, matches, hasLost: this.#guessState.hasLost() })
 		const p = document.createElement('p')
 		const node = document.createTextNode('🧙🏻‍♂️')
 		p.appendChild(node)
 
-		// todo: look in to splitting skipstate and gamestate
-		Array.from({ length: guesses }, (_, idx) => {
-			let node = document.createTextNode('⬛️')
-			if (matches && idx + 1 === guesses) {
-				node = document.createTextNode('🟩')
-			}
-			p.appendChild(node)
-		})
+		const lineNode = document.createTextNode(this.#guessState.getGameLine())
+		p.appendChild(lineNode)
 
-		if (matches || this.#guessState.hasLost()) {
+		if (matches || hasLost) {
 			const outTo = this.#output.querySelector('#share-line')!
 			const copyBtn = this.#output.querySelector('#copy-btn')!
 			outTo.innerHTML = ''
@@ -159,6 +164,7 @@ function getElementStrict<T = HTMLElement>(
 	return elem as unknown as T
 }
 
+// ugly
 const tag = document.createElement('script')
 tag.src = 'https://www.youtube.com/iframe_api'
 const firstScriptTag = document.getElementsByTagName('script')[0]
@@ -179,7 +185,8 @@ window.onYouTubeIframeAPIReady = function () {
 
 	// should be a modal
 	const out = getElementStrict<HTMLDialogElement>('output')
-	const progress = getElementStrict<HTMLDivElement>('game-progress')
+	const skipProgress = getElementStrict<HTMLDivElement>('game-progress') // todo: rename me
+	const guessProgress = getElementStrict<HTMLSpanElement>('guess-progress-out')
 
 	// initialise the game
 	const game = new Game(
@@ -188,7 +195,8 @@ window.onYouTubeIframeAPIReady = function () {
 		btnPlay,
 		opts,
 		out,
-		progress,
+		skipProgress,
+		guessProgress,
 		btnSkip
 	)
 	console.log(game)

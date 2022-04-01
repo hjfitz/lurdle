@@ -21,7 +21,7 @@
 			overflow: hidden;
 			width: 100%;
 			aspect-ratio: 16/9;
-			max-height: 70vh;
+			max-height: 60vh;
 			pointer-events: none;
 		} 
 
@@ -29,6 +29,14 @@
 			width: 300%;
 			height: 100%;
 			margin-left: -100%;
+		}
+
+		.video-player {
+			max-height: 60vh;
+		}
+
+		.answer-controls {
+			max-height: 30vh;
 		}
 
 		@font-face {
@@ -65,7 +73,7 @@
 			<h1 class="ringbearer text-4xl py-4 text-yellow-400">Lurdle</h1>
 		</header>
 
-		<section>
+		<section class="video-player">
 			<div class="w-full h-2 bg-gray-800"></div>
 			<div class="youtube-container mx-auto">
 				<div id="video-root"></div>
@@ -99,12 +107,13 @@
 				</span>
 			</a>
 			
-			<div class="w-full container flex flex-col px-32 flex-1 justify-end">
-				<select id="game-options" class="bg-black m-2 p-2 border border-gray-700 text-gray-400 rounded"></select>
+			<div class="w-full container flex flex-col px-32 flex-1 justify-end answer-controls">
 				<div class="flex justify-between m-2">
 					<a href="#" id="btn-guess" class="uppercase rounded py-1 transition hover:bg-green-400 px-4 bg-green-700">Guess</a>
+					<span id="guess-progress-out" class="text-3xl">⬛⬛⬛⬛⬛</span>
 					<a href="#" id="btn-skip" class="uppercase rounded py-1 transition hover:bg-yellow-400 px-4 bg-yellow-600">Skip <span id="skip-time"></span></a>
 				</div>
+				<select id="game-options" class="bg-black m-2 p-2 border border-gray-700 text-gray-400 rounded"></select>
 			</div>
 		</section>
 	</main>

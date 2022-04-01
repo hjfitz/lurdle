@@ -1,25 +1,41 @@
+type Guess = '🟧' | '🟥' | '⬛️' | '🟩'
 export class GameState {
 	readonly maxAttempts: 5 = 5
 	readonly #maxSeconds: 10 = 10
 	#attemptCount = 0
 	#skipCount = 0
+	public readonly historicGuesses: Guess[] = []
 
 	public getSkipPerc(): number {
 		return Math.floor((this.getSeconds() / this.#maxSeconds) * 100)
+	}
+
+	public getGameLine() {
+		const guessDelta = this.maxAttempts - this.historicGuesses.length
+		return this.historicGuesses.join('') + '⬛️'.repeat(guessDelta)
 	}
 
 	public hasLost(): boolean {
 		return this.#attemptCount >= this.maxAttempts
 	}
 
-	public nextAttemptState(): boolean {
+	public setWin() {
+		this.historicGuesses.pop()
+		this.historicGuesses.push('🟩')
+	}
+
+	public nextAttemptState(updateHistoricGuesses = true): boolean {
 		this.#attemptCount += 1
+		if (updateHistoricGuesses) {
+			this.historicGuesses.push('🟥')
+		}
 		return this.hasLost()
 	}
 
 	public nextProgressState(): boolean {
 		this.#skipCount += 1
-		return this.nextAttemptState()
+		this.historicGuesses.push('🟧')
+		return this.nextAttemptState(false)
 	}
 
 	public getAttemptCount(): number {
