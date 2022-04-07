@@ -70,7 +70,7 @@
 <body class="bg-black text-white">
 	<main class="flex flex-col min-h-screen">
 		<header class="bg-green text-center w-full">
-			<h1 class="ringbearer text-4xl py-4 text-yellow-400">Lurdle</h1>
+			<h1 class="ringbearer text-6xl lg:text-4xl lg:py-4 py-8 text-yellow-400">Lurdle</h1>
 		</header>
 
 		<section class="video-player">
@@ -107,13 +107,13 @@
 				</span>
 			</a>
 			
-			<div class="w-full container flex flex-col px-32 flex-1 justify-end answer-controls">
-				<div class="flex justify-between m-2">
-					<a href="#" id="btn-guess" class="uppercase rounded py-1 transition hover:bg-green-400 px-4 bg-green-700">Guess</a>
-					<span id="guess-progress-out" class="text-3xl">⬛⬛⬛⬛⬛</span>
-					<a href="#" id="btn-skip" class="uppercase rounded py-1 transition hover:bg-yellow-400 px-4 bg-yellow-600">Skip <span id="skip-time"></span></a>
+			<div class="w-full container flex lg:flex-col flex-col-reverse lg:px-32 flex-1 justify-end answer-controls">
+				<div class="flex justify-between m-2 text-center lg:flex-row flex-col">
+					<a href="#" id="btn-guess" class="uppercase rounded my-8 lg:my-0 py-3 lg:py-1 lg:text-xl text-4xl transition hover:bg-green-400 px-4 bg-green-700">Guess</a>
+					<span id="guess-progress-out" class="text-6xl lg:text-3xl">⬛⬛⬛⬛⬛</span>
+					<a href="#" id="btn-skip" class="uppercase lg:text-xl text-4xl my-8 lg:my-0 rounded lg:py-1 py-3 transition hover:bg-yellow-400 px-4 bg-yellow-600">Skip <span id="skip-time"></span></a>
 				</div>
-				<select id="game-options" class="bg-black m-2 p-2 border border-gray-700 text-gray-400 rounded"></select>
+				<select id="game-options" class="bg-black m-2 text-4xl lg:text-base p-2 border border-gray-700 text-gray-400 rounded"></select>
 			</div>
 		</section>
 	</main>
