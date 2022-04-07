@@ -7,7 +7,7 @@
   "author": "Harry Fitzgerald <hjfitz@pm.me>",
   "license": "MIT",
   "scripts": {
-    "build:prod": "tsc",
+    "build:prod": "rollup --config rollup.config.js --configPlugin typescript",
     "dev": "live-server ./src",
     "watch": "tsc -w --pretty"
   },
