@@ -14,6 +14,8 @@ Sentry.init({
 	tracesSampleRate: 1.0,
 })
 
-Sentry.configureScope((scope) => {
-	scope.setExtra('sessionURL', LogRocket.sessionURL)
+LogRocket.getSessionURL((sessionURL) => {
+	Sentry.configureScope((scope) => {
+		scope.setExtra('sessionURL', sessionURL)
+	})
 })
