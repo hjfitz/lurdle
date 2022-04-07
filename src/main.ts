@@ -1,6 +1,7 @@
 import { Events } from './db.js'
 import guessState from './guess.state.js'
 import { VideoState } from './video.state.js'
+import './analytics'
 
 class Game {
 	readonly #guessState = guessState
@@ -54,11 +55,8 @@ class Game {
 
 	setPlayingIcon(stopped = false) {
 		const playIcon = this.#playButton.querySelector('.material-icons')!
-		if (stopped)
-			playIcon.textContent = 'play_circle'
-		else
-			playIcon.textContent = 'not_interested' // pause or fiber_manual_record
-
+		if (stopped) playIcon.textContent = 'play_circle'
+		else playIcon.textContent = 'not_interested' // pause or fiber_manual_record
 	}
 
 	initialiseDropdownOptions() {
@@ -87,7 +85,7 @@ class Game {
 		if (hasLost) {
 			this.writeOutput(false, this.#guessState.getAttemptCount(), hasLost)
 		} else {
-		// move progress bar
+			// move progress bar
 			const progressBar = this.#progressBar.querySelector(
 				'#guess-progress'
 			) as HTMLDivElement
@@ -98,7 +96,7 @@ class Game {
 				progressBar.classList.remove('bg-gray-100')
 				this.#skipButton.classList.add('disabled')
 				this.writeOutput(false, this.#guessState.maxAttempts, hasLost)
-			// todo: cancel other buttons
+				// todo: cancel other buttons
 			}
 		}
 		this.writeProgress()
@@ -116,15 +114,14 @@ class Game {
 		const guess = this.getGuess()
 		const isMatch = this.#videoState.getVideo() === guess
 		const totalGuesses = this.#guessState.getAttemptCount()
-		if (isMatch)
-			this.#guessState.setWin()
+		if (isMatch) this.#guessState.setWin()
 		this.writeOutput(isMatch, totalGuesses, hasLost)
 		this.writeProgress()
 	}
 
 	writeProgress() {
 		const guessLine = this.#guessState.getGameLine()
-		this.#guessProgress.textContent = guessLine 
+		this.#guessProgress.textContent = guessLine
 	}
 
 	async writeOutput(matches: boolean, guesses: number, hasLost: boolean) {
