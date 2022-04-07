@@ -1,5 +1,7 @@
 import { defineConfig } from 'rollup'
 import typescriptPlugin from '@rollup/plugin-typescript'
+import nodeResolve from '@rollup/plugin-node-resolve'
+import commonjs from '@rollup/plugin-commonjs'
 
 const config = defineConfig({
 	input: 'src/main.ts',
@@ -8,7 +10,7 @@ const config = defineConfig({
 		format: 'module',
 		sourcemap: 'inline',
 	},
-	plugins: [typescriptPlugin()],
+	plugins: [typescriptPlugin(), commonjs(), nodeResolve()],
 })
 
 export default config
